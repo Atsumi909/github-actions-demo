@@ -25,15 +25,14 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
+      - name: Add module to Python path
+        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)" >> $GITHUB_ENV
+
       - name: Run Tests with Coverage
         run: pytest --cov=myapp --cov-report=xml
 
-      - name: Check if coverage.xml exists
-        run: ls -lah coverage.xml || echo "coverage.xml not found"
-
-
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-report
           path: coverage.xml

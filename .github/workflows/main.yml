@@ -1,16 +1,36 @@
-name: Basic Workflow
+name: Test Workflow
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - develop
 
 jobs:
-  hello:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Print Message
-        run: echo "Hello, GitHub Actions!"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run Tests with Coverage
+        run: |
+          pytest --cov=myapp --cov-report=xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage.xml
